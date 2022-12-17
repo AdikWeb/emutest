@@ -1,6 +1,6 @@
 const wasm = require('./genplus.js');
 const fs = require('fs');
-fs.readFileSync('/app/js/genplus.wasm');
+fs.readFileSync('./js/genplus.wasm');
 
 const { createCanvas } = require('canvas')
 const ROM_PATH = './roms/d.bin';
