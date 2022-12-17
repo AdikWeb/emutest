@@ -239,7 +239,7 @@ const wss = new Server({ server });
 wss.on('connection', onConnect);
 
 function testDraw(){
-    return canvas.toDataURL("image/jpeg");
+    return canvasContext.getImageData(0,0, 500, 500).data; // This is a Uint8ClampedArray
 }
 
 let wsClientW = [];
