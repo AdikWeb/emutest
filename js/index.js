@@ -181,7 +181,7 @@ const sound = function(audioBuffer) {
 };
 
 const loop = function() {
-    setTimeout(loop, 0)
+    setTimeout(loop, .45)
     now = Date.now();
     delta = now - then;
     if (delta > INTERVAL && !pause) {
@@ -219,10 +219,10 @@ setInterval(()=>{
     const img = testDraw();
     wsClientW.forEach((ws)=>{
         if(ws){
-            ws.send(img.buffer);
+            ws.send(img);
         }
     })
-},0)
+},.45)
 const express = require('express')
 
 const INDEX = './index.html';
@@ -239,7 +239,7 @@ const wss = new Server({ server });
 wss.on('connection', onConnect);
 
 function testDraw(){
-    return canvasContext.getImageData(0,0, 500, 500).data; // This is a Uint8ClampedArray
+    return canvas.toDataURL();
 }
 
 let wsClientW = [];
