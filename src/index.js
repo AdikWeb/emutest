@@ -14,7 +14,6 @@ const GAMEPAD_API_INDEX = 32;
 let gens;
 let romdata;
 let vram;
-let input;
 let initialized = false;
 let pause = false;
 
@@ -87,13 +86,12 @@ const start = function() {
 const sound = function(audioBuffer) {
     let source = audioContext.createBufferSource();
     source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
     let currentSoundTime = audioContext.currentTime;
     if(currentSoundTime < soundShedTime) {
-        source.start(soundShedTime);
+        // source.start(soundShedTime);
         soundShedTime += audioBuffer.duration;
     } else {
-        source.start(currentSoundTime);
+        // source.start(currentSoundTime);
         soundShedTime = currentSoundTime + audioBuffer.duration + soundDelayTime;
     }
 };
@@ -123,10 +121,10 @@ const loop = function() {
         if(fps < FPS) {
             soundShedTime = 0;
         } else {
-            // let audioBuffer = audioContext.createBuffer(2, SAMPLING_PER_FPS, SOUND_FREQUENCY);
-            // audioBuffer.getChannelData(0).set(audio_l);
-            // audioBuffer.getChannelData(1).set(audio_r);
-            // sound(audioBuffer);
+            let audioBuffer = audioContext.createBuffer(2, SAMPLING_PER_FPS, SOUND_FREQUENCY);
+            audioBuffer.getChannelData(0).set(audio_l);
+            audioBuffer.getChannelData(1).set(audio_r);
+            sound(audioBuffer);
         }
         canvasContext.fillText("FPS " + fps, CANVAS_WIDTH - 50, CANVAS_HEIGHT - 16);
     }
@@ -142,7 +140,6 @@ const io = require('socket.io')(server, {
 });
 server.listen(3000, "localhost");
 
-let wsClientW = [];
 io.on('connection', function(socket){
     console.log('a user connected');
     let t = setInterval(()=>{
