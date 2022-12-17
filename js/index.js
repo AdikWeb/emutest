@@ -181,7 +181,7 @@ const sound = function(audioBuffer) {
 };
 
 const loop = function() {
-    setTimeout(loop, .45)
+    setTimeout(loop, 0)
     now = Date.now();
     delta = now - then;
     if (delta > INTERVAL && !pause) {
@@ -219,10 +219,10 @@ setInterval(()=>{
     const img = testDraw();
     wsClientW.forEach((ws)=>{
         if(ws){
-            ws.send(img);
+            ws.send(img.buffer);
         }
     })
-},.45)
+},0)
 const express = require('express')
 
 const INDEX = './index.html';
