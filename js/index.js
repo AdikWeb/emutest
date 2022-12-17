@@ -215,12 +215,28 @@ const loop = function() {
 };
 
 
+setInterval(()=>{
+    const img = testDraw();
+    wsClientW.forEach((ws)=>{
+        if(ws){
+            ws.send(img);
+        }
+    })
+},.45)
+const express = require('express')
 
-const http = require('http');
-const WebSocket = require('ws');
-const wsServer = new WebSocket.Server({port: 9000});
+const INDEX = './index.html';
+const PORT =  3000;
 
-wsServer.on('connection', onConnect);
+const server = express()
+    .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+    .listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+const { Server } = require('ws');
+
+const wss = new Server({ server });
+
+wss.on('connection', onConnect);
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -246,15 +262,6 @@ function onConnect(wsClient) {
         console.log('Пользователь отключился');
     })
 }
-
-setInterval(()=>{
-    const img = testDraw();
-    wsClientW.forEach((ws)=>{
-        if(ws){
-            ws.send(img);
-        }
-    })
-},.45)
 
 //
 //
