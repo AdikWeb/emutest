@@ -1,0 +1,19 @@
+{
+  "name": "testemuserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AdikWeb",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.10.2",
+    "fetch": "^1.1.0",
+    "http": "^0.0.1-security",
+    "whatwg-fetch": "^3.6.2",
+    "ws": "^8.11.0",
+    "xhr2": "^0.2.1"
+  }
+}
