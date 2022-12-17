@@ -1,6 +1,6 @@
 const wasm = require('./genplus.js');
 const fs = require('fs');
-fs.readFileSync('./js/genplus.wasm');
+fs.readFileSync('/app/js/genplus.wasm');
 
 const { createCanvas } = require('canvas')
 const ROM_PATH = './roms/d.bin';
@@ -237,12 +237,6 @@ const { Server } = require('ws');
 const wss = new Server({ server });
 
 wss.on('connection', onConnect);
-
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 function testDraw(){
     return canvas.toDataURL("image/jpeg");
