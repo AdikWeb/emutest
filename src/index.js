@@ -103,7 +103,9 @@ const io = require('socket.io')(server, {
     forceNew: true,
     cors: {
         origin: "*",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
     }
 });
 server.listen(3000, "localhost");
