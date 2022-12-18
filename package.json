@@ -16,7 +16,6 @@
     "http": "^0.0.1-security",
     "socket.io": "^4.5.4",
     "utf-8-validate": "^5.0.10",
-    "web-audio-api": "^0.2.2",
     "whatwg-fetch": "^3.6.2",
     "ws": "^8.11.0",
     "xhr2": "^0.2.1"

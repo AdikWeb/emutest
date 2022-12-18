@@ -3,7 +3,7 @@ const fs = require('fs');
 fs.readFileSync(__dirname+'/wasm/genplus.wasm');
 
 const { createCanvas } = require('canvas');
-const ROM_PATH = './assets/roms/d.bin';
+const ROM_PATH = './assets/roms/mk/8.bin';
 const CANVAS_WIDTH = 640;
 const CANVAS_HEIGHT = 480;
 const SAMPLING_PER_FPS = 736;
@@ -81,7 +81,6 @@ const loop = function() {
     now = Date.now();
     delta = now - then;
     if (delta > INTERVAL && !pause) {
-        // keyscan();
         // update
         gens._tick();
         then = now - (delta % INTERVAL);
@@ -111,17 +110,27 @@ server.listen(3000, "localhost");
 io.on('connection', function(socket){
     console.log('a user connected');
     let t = setInterval(()=>{
-        socket.emit("frame", {"image": canvas.toDataURL(), "audio_l": audio_l, "audio_r": audio_r, "fps": fps});
+        socket.emit("frame", {"image": canvas.toDataURL(), audio_l, audio_r, fps});
     }, 0);
+
     socket.on("disconnect",()=>{
         console.log("disconnect");
         clearInterval(t);
     });
+
     socket.on("connect",()=>{
         console.log("connect");
-
     });
+
     socket.on('chat message', function(msg){
         io.emit('chat message', msg);
+    });
+
+    socket.on('button', function(value, index){
+        input[index] = value;
+    })
+
+    socket.on('axes', function(value, index){
+        input[index] = value;
     });
 });
