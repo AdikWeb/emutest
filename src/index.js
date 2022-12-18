@@ -109,7 +109,7 @@ server.listen(3000);
 io.on('connection', function(socket){
     console.log('a user connected');
     let t = setInterval(()=>{
-        socket.emit("frame", {"image": canvas.toDataURL(), audio_l, audio_r, fps});
+        socket.emit("frame", {"image": canvas.toDataURL(), fps});
     }, 0);
 
     socket.on("disconnect",()=>{
@@ -119,10 +119,6 @@ io.on('connection', function(socket){
 
     socket.on("connect",()=>{
         console.log("connect");
-    });
-
-    socket.on('chat message', function(msg){
-        io.emit('chat message', msg);
     });
 
     socket.on('button', function(value, index){
