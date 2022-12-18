@@ -109,7 +109,7 @@ server.listen(3000);
 io.on('connection', function(socket){
     console.log('a user connected');
     let t = setInterval(()=>{
-        socket.emit("frame", {"image": canvas.toDataURL(), fps});
+        socket.emit("frame", {"image": canvas.toDataURL(), audio_l, audio_r, fps});
     }, 0);
 
     socket.on("disconnect",()=>{
