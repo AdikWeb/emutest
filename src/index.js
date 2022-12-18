@@ -6,7 +6,6 @@ const { createCanvas } = require('canvas');
 const ROM_PATH = './assets/roms/d.bin';
 const CANVAS_WIDTH = 640;
 const CANVAS_HEIGHT = 480;
-const SOUND_FREQUENCY = 44100;
 const SAMPLING_PER_FPS = 736;
 const GAMEPAD_API_INDEX = 32;
 
@@ -14,7 +13,6 @@ const GAMEPAD_API_INDEX = 32;
 let gens;
 let romdata;
 let vram;
-let input;
 let initialized = false;
 let pause = false;
 
@@ -32,14 +30,8 @@ let delta;
 let startTime;
 let fps;
 let frame;
-
-// audio member
-const SOUND_DELAY_FRAME = 8;
-let audioContext;
 let audio_l;
 let audio_r;
-let soundShedTime = 0;
-let soundDelayTime = SAMPLING_PER_FPS * SOUND_DELAY_FRAME / SOUND_FREQUENCY;
 
 (function() {
     canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
@@ -84,20 +76,6 @@ const start = function() {
     loop();
 };
 
-const sound = function(audioBuffer) {
-    let source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    let currentSoundTime = audioContext.currentTime;
-    if(currentSoundTime < soundShedTime) {
-        source.start(soundShedTime);
-        soundShedTime += audioBuffer.duration;
-    } else {
-        source.start(currentSoundTime);
-        soundShedTime = currentSoundTime + audioBuffer.duration + soundDelayTime;
-    }
-};
-
 const loop = function() {
     setTimeout(loop, 0)
     now = Date.now();
@@ -107,10 +85,8 @@ const loop = function() {
         // update
         gens._tick();
         then = now - (delta % INTERVAL);
-        // draw
         canvasImageData.data.set(vram);
         canvasContext.putImageData(canvasImageData, 0, 0);
-        // fps
         frame++;
         if(new Date().getTime() - startTime >= 1000) {
             fps = frame;
@@ -119,16 +95,6 @@ const loop = function() {
         }
         // sound
         gens._sound();
-        // sound hack
-        if(fps < FPS) {
-            soundShedTime = 0;
-        } else {
-            // let audioBuffer = audioContext.createBuffer(2, SAMPLING_PER_FPS, SOUND_FREQUENCY);
-            // audioBuffer.getChannelData(0).set(audio_l);
-            // audioBuffer.getChannelData(1).set(audio_r);
-            // sound(audioBuffer);
-        }
-        canvasContext.fillText("FPS " + fps, CANVAS_WIDTH - 50, CANVAS_HEIGHT - 16);
     }
 };
 
@@ -142,11 +108,10 @@ const io = require('socket.io')(server, {
 });
 server.listen(3000, "localhost");
 
-let wsClientW = [];
 io.on('connection', function(socket){
     console.log('a user connected');
     let t = setInterval(()=>{
-        socket.emit("image", canvas.toDataURL());
+        socket.emit("frame", {"image": canvas.toDataURL(), "audio_l": audio_l, "audio_r": audio_r, "fps": fps});
     }, 0);
     socket.on("disconnect",()=>{
         console.log("disconnect");
