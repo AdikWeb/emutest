@@ -99,13 +99,12 @@ const loop = function() {
 
 const server = require('http').createServer();
 const io = require('socket.io')(server, {
-    forceNew: true,
     cors: {
         origin: "*",
-        methods: ["GET", "POST"]
     }
 });
-server.listen(3000, "localhost");
+
+server.listen(3000);
 
 io.on('connection', function(socket){
     console.log('a user connected');
