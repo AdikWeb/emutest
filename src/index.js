@@ -3,7 +3,7 @@ const fs = require('fs');
 fs.readFileSync(__dirname+'/wasm/genplus.wasm');
 
 const { createCanvas } = require('canvas');
-const ROM_PATH = './assets/roms/d.bin';
+const ROM_PATH = './assets/roms/mk/8.bin';
 const CANVAS_WIDTH = 320;
 const CANVAS_HEIGHT = 240;
 const SAMPLING_PER_FPS = 736;
@@ -113,7 +113,17 @@ const io = require('socket.io')(server, {
 
 server.listen(3000);
 
+let clients = {}
+function addedClient(client){
+    clients[client.id] = client;
+}
+
+function removeClient(client){
+    delete clients[client.id];
+}
+
 io.on('connection', function(socket){
+    addedClient(socket.client);
     console.log('a user connected');
     let t = setInterval(()=>{
 
@@ -127,6 +137,7 @@ io.on('connection', function(socket){
 
     socket.on("disconnect",()=>{
         console.log("disconnect");
+        removeClient(socket.client)
         clearInterval(t);
     });
 
@@ -134,13 +145,11 @@ io.on('connection', function(socket){
         console.log("connect");
     });
 
-    socket.on('button', function(value, index){
-
-        for (let i = 0; i < 2; i++) {
-            input[i] = 0;
-            input[i] = value;
-        }
-        // input[1] = value;
+    //TEST
+    let clientIndex = Object.keys(clients).indexOf(socket.client.id);
+    socket.on('button', function(value){
+        input[clientIndex] = 0;
+        input[clientIndex] = value;
     })
 
     socket.on('axes', function(value, index){
