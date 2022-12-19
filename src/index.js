@@ -3,9 +3,9 @@ const fs = require('fs');
 fs.readFileSync(__dirname+'/wasm/genplus.wasm');
 
 const { createCanvas } = require('canvas');
-const ROM_PATH = './assets/roms/mk/8.bin';
-const CANVAS_WIDTH = 640;
-const CANVAS_HEIGHT = 480;
+const ROM_PATH = './assets/roms/d.bin';
+const CANVAS_WIDTH = 320;
+const CANVAS_HEIGHT = 240;
 const SAMPLING_PER_FPS = 736;
 const GAMEPAD_API_INDEX = 32;
 
@@ -61,6 +61,7 @@ wasm().then(function(module) {
 
 const start = function() {
     if(!initialized) return;
+
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
     // emulator start
     gens._start();
@@ -70,6 +71,7 @@ const start = function() {
     audio_l = new Float32Array(gens.HEAPF32.buffer, gens._get_web_audio_l_ref(), SAMPLING_PER_FPS);
     audio_r = new Float32Array(gens.HEAPF32.buffer, gens._get_web_audio_r_ref(), SAMPLING_PER_FPS);
     // input
+    console.log(gens._get_input_buffer_ref())
     input = new Float32Array(gens.HEAPF32.buffer, gens._get_input_buffer_ref(), GAMEPAD_API_INDEX);
     // game loop
     then = Date.now();
@@ -85,6 +87,9 @@ const loop = function() {
         gens._tick();
         then = now - (delta % INTERVAL);
         canvasImageData.data.set(vram);
+
+
+
         canvasContext.putImageData(canvasImageData, 0, 0);
         frame++;
         if(new Date().getTime() - startTime >= 1000) {
@@ -93,9 +98,11 @@ const loop = function() {
             startTime = new Date().getTime();
         }
         // sound
-        gens._sound();
+        // gens._sound();
     }
 };
+
+
 
 const server = require('http').createServer();
 const io = require('socket.io')(server, {
@@ -109,6 +116,12 @@ server.listen(3000);
 io.on('connection', function(socket){
     console.log('a user connected');
     let t = setInterval(()=>{
+
+        // canvas.width = gens._get_last_width;
+        // canvas.height = gens._get_last_height;
+        canvas.width = new Int8Array(gens.HEAPF32.buffer, gens._get_last_width(), SAMPLING_PER_FPS);
+        canvas.height = new Int8Array(gens.HEAPF32.buffer, gens._get_last_height(), SAMPLING_PER_FPS);
+
         socket.emit("frame", {"image": canvas.toDataURL(), audio_l, audio_r, fps});
     }, 0);
 
@@ -122,7 +135,12 @@ io.on('connection', function(socket){
     });
 
     socket.on('button', function(value, index){
-        input[index] = value;
+
+        for (let i = 0; i < 2; i++) {
+            input[i] = 0;
+            input[i] = value;
+        }
+        // input[1] = value;
     })
 
     socket.on('axes', function(value, index){
