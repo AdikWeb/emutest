@@ -19,8 +19,8 @@ class Game {
         this.now = 0;
         this.then = 0;
         this.delta = 0;
-        this.audio_l = 0;
-        this.audio_r = 0;
+        this.audio_l = null;
+        this.audio_r = null;
         this.romdata = null;
         this.vram = null;
         this.gens = null;
@@ -82,8 +82,7 @@ class Game {
                 this.frame = 0;
                 this.startTime = new Date().getTime();
             }
-            // sound
-            // gens._sound();
+            this.gens._sound();
         }
     }
 }

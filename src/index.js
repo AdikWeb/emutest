@@ -55,12 +55,15 @@ io.on('connection', function(socket){
     games[room].gameLoop(()=>{
         socket.emit("frame", {"image": games[room].vram, "fps": game.fps});
     })
+    // let t = setInterval(()=>{
+    //     socket.emit("frame", {"image": games[room].canvas.toDataURL(), "fps": game.fps, "audio_l": games[room].audio_l, "audio_r": games[room].audio_r});
+    // }, 0);
 
     socket.on("disconnect",()=>{
         // TODO: Добавить удаление комнат и игр
         console.log(`User ${socket.client.id} disconnected from ${room}`);
         removeClient(socket.client)
-        clearInterval(t);
+        // clearInterval(t);
     });
 
     //TEST
