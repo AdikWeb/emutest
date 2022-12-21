@@ -53,11 +53,8 @@ io.on('connection', function(socket){
     console.log(`User ${socket.client.id} connected to ${room}`);
 
     games[room].gameLoop(()=>{
-        socket.emit("frame", {"image": games[room].vram, "fps": game.fps});
+        socket.emit("frame", {"image": games[room].vram, "fps": game.fps, "audio_l": games[room].audio_l, "audio_r": games[room].audio_r});
     })
-    // let t = setInterval(()=>{
-    //     socket.emit("frame", {"image": games[room].canvas.toDataURL(), "fps": game.fps, "audio_l": games[room].audio_l, "audio_r": games[room].audio_r});
-    // }, 0);
 
     socket.on("disconnect",()=>{
         // TODO: Добавить удаление комнат и игр
