@@ -51,9 +51,10 @@ io.on('connection', function(socket){
     socket.join(room);
     addedClient(socket.client);
     console.log(`User ${socket.client.id} connected to ${room}`);
-    let t = setInterval(()=>{
-        socket.emit("frame", {"image": games[room].canvas.toDataURL(), "fps": game.fps});
-    }, 0);
+
+    games[room].gameLoop(()=>{
+        socket.emit("frame", {"image": games[room].vram, "fps": game.fps});
+    })
 
     socket.on("disconnect",()=>{
         // TODO: Добавить удаление комнат и игр

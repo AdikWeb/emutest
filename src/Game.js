@@ -10,7 +10,7 @@ class Game {
         this.canvasContext = this.canvas.getContext('2d');
         this.canvasContext.fillStyle = "#00FFFF";
         this.canvasContext.font = "12px monospace";
-        this.canvasImageData = this.canvasContext.createImageData(320, 240);
+        // this.canvasImageData = this.canvasContext.createImageData(320, 240);
         this.fps = 0;
         this.frame = 60;
         this.startTime = new Date().getTime();
@@ -48,7 +48,7 @@ class Game {
 
     start() {
         if (this.initialized) {
-            this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            // this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.gens._start();
             // vram view
             this.vram = new Uint8ClampedArray(this.gens.HEAPU8.buffer, this.gens._get_frame_buffer_ref(), this.CANVAS_WIDTH * this.CANVAS_HEIGHT * 4);
@@ -62,7 +62,10 @@ class Game {
             this.mainLoop();
         }
     }
-
+    loop = null;
+    gameLoop(callback){
+        this.loop = callback;
+    }
     mainLoop() {
         setTimeout(this.mainLoop.bind(this), 0)
         let now = Date.now();
@@ -70,8 +73,9 @@ class Game {
         if (delta > this.INTERVAL && !this.pause) {
             this.gens._tick();
             this.then = now - (delta % this.INTERVAL);
-            this.canvasImageData.data.set(this.vram);
-            this.canvasContext.putImageData(this.canvasImageData, 0, 0);
+            // this.canvasImageData.data.set(this.vram);
+            // this.canvasContext.putImageData(this.canvasImageData, 0, 0);
+            if(this.loop&&typeof this.loop === "function") this.loop(this.vram)
             this.frame++;
             if(new Date().getTime() - this.startTime >= 1000) {
                 this.fps = this.frame;
