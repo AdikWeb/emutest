@@ -50,7 +50,7 @@ io.on('connection', function(socket){
     addedClient(socket.client);
     console.log(`User ${socket.client.id} connected to ${room}`);
     let t = setInterval(()=>{
-        socket.emit("frame", {"image": games[room].canvas.toDataURL(), "fps": game.fps});
+        socket.emit("frame", {"image": games[room].canvas.toDataURL(), "fps": game.fps, "audio_l": games[room].audio_l, "audio_r": games[room].audio_r});
     }, 0);
 
     socket.on("disconnect",()=>{
