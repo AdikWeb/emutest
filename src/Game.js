@@ -73,7 +73,7 @@ class Game {
                 this.frame = 0;
                 this.startTime = new Date().getTime();
             }
-            this.gens._sound();
+            // this.gens._sound();
         }
     }
 }
