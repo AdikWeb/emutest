@@ -3,6 +3,7 @@ let game = null;
 
 const server = require('http').createServer();
 const { instrument } = require('@socket.io/admin-ui');
+
 const io = require('socket.io')(server, {
     cors: {
         //TODO: добавить домен будущего сайта/сервера
@@ -10,6 +11,7 @@ const io = require('socket.io')(server, {
         credentials: true
     }
 });
+
 // https://admin.socket.io
 instrument(io, {
     auth: false,
@@ -64,7 +66,7 @@ io.on('connection', function(socket){
     let clientIndex = Object.keys(clients).indexOf(socket.client.id);
     socket.on('button', function(value){
         //Todo: зачем тут 0 если мы передаем 0 при отпускании?
-        games[room].input[clientIndex] = 0;
+        // games[room].input[clientIndex] = 0x0000;
         games[room].input[clientIndex] = value;
     })
 
